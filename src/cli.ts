@@ -8,7 +8,7 @@ import { ZDictionaryReaderKeep } from './dictionary-reader/dictionary-reader-kee
 import { ZDictionaryReaderFile } from './dictionary-reader/dictionary-reader-file.class';
 import { IZDictionaryReader } from './dictionary-reader/dictionary-reader.interface';
 
-const args: IZTokenizerArgs = usage('$0 [options]')
+const args: IZTokenizerArgs = usage('$0 -i /path/to/input/file [options]')
   .alias('i', 'inputFile')
   .demandOption('i')
   .describe('i', 'Path to the input file to replace tokens for.')
@@ -26,7 +26,7 @@ if (args.dictionaryFile) {
   dictionaryReader = new ZDictionaryReaderFile(args.dictionaryFile, dictionaryReaderFallback);
 }
 
-new ZTokenizer(args.inputFile, args.outputFile, dictionaryReader)
+new ZTokenizer(args.inputFile, dictionaryReader, args.outputFile)
   .run()
   .then((result) => process.exit(result))
   .catch((err) => {

@@ -1,7 +1,7 @@
 import { readFile, writeFile } from 'fs';
+import { chain } from 'lodash';
 import { promisify } from 'util';
 import { IZDictionaryReader } from '../dictionary-reader/dictionary-reader.interface';
-import { chain } from 'lodash';
 
 /**
  * Represents the root application.
@@ -16,9 +16,10 @@ export class ZTokenizer {
    * Initializes a new instance of this object.
    *
    * @param _inputFile The input file to replace tokens in.
+   * @param _dictionaryReader The reader to retrieve the dictionary values.
    * @param _outputFile The output file to write to.  If this is omitted, then the console is used.
    */
-  public constructor(private readonly _inputFile: string, private readonly _outputFile: string, private readonly _dictionaryReader: IZDictionaryReader) {}
+  public constructor(private readonly _inputFile: string, private readonly _dictionaryReader: IZDictionaryReader, private readonly _outputFile?: string) {}
 
   /**
    * Runs the application.
