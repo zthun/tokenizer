@@ -1,0 +1,10 @@
+{
+  "version": "${version}",
+  "protocol": "${protocol}",
+  "domain": "${domain}",
+  "port": "${port}",
+  "subdomain": "${subdomain}",
+  "path": "${path}",
+  "hash": "${hash}",
+  "url": "${protocol}://${subdomain}.${domain}:${port}/${path}#${hash}"
+}

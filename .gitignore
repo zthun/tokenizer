@@ -1,0 +1,9 @@
+# General conventions
+node_modules
+dist
+coverage
+reports
+.DS_Store
+*.log
+*.tgz
+.rpt2_cache
