@@ -1,5 +1,5 @@
 import { chain, identity } from 'lodash';
-import { IZDictionaryReader } from './dictionary-reader.interface';
+import { IZDictionaryReader, ZVariableDictionary } from './dictionary-reader.interface';
 
 /**
  * Reads the dictionary from stdin.
@@ -23,7 +23,7 @@ export class ZDictionaryReaderStdIn implements IZDictionaryReader {
    *
    * @return The dictionary to map key values.
    */
-  public async read(keys: string[]): Promise<{ [key: string]: string }> {
+  public async read(keys: string[]): Promise<ZVariableDictionary> {
     return chain(keys)
       .keyBy(identity)
       .mapValues((d) => this.valueFor(d))

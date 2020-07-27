@@ -1,6 +1,6 @@
 {
   "name": "@zthun/tokenizer",
-  "version": "1.0.0",
+  "version": "1.0.0-0",
   "description": "An application used to replace dictionary tokens in files.",
   "author": "Anthony Bonta",
   "license": "MIT",

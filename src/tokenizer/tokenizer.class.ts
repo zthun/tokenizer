@@ -36,7 +36,7 @@ export class ZTokenizer {
     const dictionary = await this._dictionaryReader.read(keys);
 
     let replaced = content;
-    variables.forEach((variable, i) => (replaced = replaced.split(variable).join(dictionary[keys[i]])));
+    variables.forEach((variable, i) => (replaced = replaced.split(variable).join((dictionary[keys[i]] ?? variable).toString())));
 
     if (this._outputFile) {
       const writeFileAsync = promisify(writeFile);

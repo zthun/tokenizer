@@ -1,6 +1,6 @@
 import { readFile } from 'fs';
 import { promisify } from 'util';
-import { IZDictionaryReader } from './dictionary-reader.interface';
+import { IZDictionaryReader, ZVariableDictionary } from './dictionary-reader.interface';
 
 /**
  * Represents a dictionary reader that reads from a file.
@@ -23,13 +23,13 @@ export class ZDictionaryReaderFile implements IZDictionaryReader {
    *
    * @returns the key dictionary.
    */
-  public async read(keys: string[]): Promise<{ [key: string]: string }> {
+  public async read(keys: string[]): Promise<ZVariableDictionary> {
     const readFileAsync = promisify(readFile);
     const buffer = await readFileAsync(this._file);
-    let dictionary = JSON.parse(buffer.toString('utf-8'));
+    let dictionary: any = JSON.parse(buffer.toString('utf-8'));
     const missing = keys.filter((key) => !Object.prototype.hasOwnProperty.call(dictionary, key));
 
-    if (missing) {
+    if (missing.length) {
       const remaining = await this._fallback.read(missing);
       dictionary = Object.assign(dictionary, remaining);
     }

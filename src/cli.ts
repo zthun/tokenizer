@@ -1,4 +1,4 @@
-/* istanbul ignore file */
+#!/usr/bin/env node
 
 import { usage } from 'yargs';
 import { ZDictionaryReaderStdIn } from './dictionary-reader/dictionary-reader-stdin.class';
