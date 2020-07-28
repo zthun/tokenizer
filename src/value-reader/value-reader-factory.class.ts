@@ -1,11 +1,12 @@
-import { ZValueReaderKeep } from './value-reader-keep.class';
-import { ZValueStrategy } from './value-strategy.enum';
 import { ZValueReaderEmpty } from './value-reader-empty.class';
-import { ZValueReaderStdin } from './value-reader-stdin.class';
 import { ZValueReaderFile } from './value-reader-file.class';
+import { ZValueReaderKeep } from './value-reader-keep.class';
+import { ZValueReaderStdin } from './value-reader-stdin.class';
+import { IZValueReader } from './value-reader.interface';
+import { ZValueStrategy } from './value-strategy.enum';
 
 export class ZValueReaderFactory {
-  public create(strategy: ZValueStrategy) {
+  public create(strategy: ZValueStrategy): IZValueReader {
     switch (strategy) {
       case ZValueStrategy.EnterValueManually:
         return new ZValueReaderStdin();
@@ -18,7 +19,7 @@ export class ZValueReaderFactory {
     }
   }
 
-  public default() {
+  public default(): IZValueReader {
     return new ZValueReaderKeep();
   }
 }
