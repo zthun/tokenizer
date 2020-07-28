@@ -11,6 +11,10 @@ import { IZTokenizerOptions } from './tokenizer-options.interface';
  * Represents the root application.
  */
 export class ZTokenizer {
+  public static readonly WarningNoGlobsProvided = chalk.yellow('No globs were provided.  Check your files option in your tokenizer config file or pass the globs on the command line.');
+  public static readonly WarningNoFilesFound = chalk.yellow('No files found to process');
+  public static readonly WarningNoVariablesFound = chalk.yellow('No variables were found in any of the discovered files.  A one to one copy of every file will be made with no changes.');
+
   private _readFileAsync = promisify(readFile);
   private _writeFileAsync = promisify(writeFile);
   private _mkdirAsync = promisify(mkdir);
@@ -28,11 +32,15 @@ export class ZTokenizer {
   public async run(): Promise<number> {
     try {
       const files = await this._expandGlobs();
+
+      if (!files.length) {
+        return 0;
+      }
+
       const variables = await this._findVariables(files);
-      const keys = await this._mapVariablesToKeys(variables);
+      const keys = variables.map((variable) => variable.replace('${', '').replace('}', ''));
       const dictionary = await this._options.dictionary.read(keys);
-      const unique = keys.map((key) => this._toVariable(key));
-      await this._writeFiles(unique, keys, dictionary, files);
+      await this._writeFiles(variables, keys, dictionary, files);
     } catch (err) {
       this._options.logger.error(chalk.red(err));
       return 1;
@@ -41,37 +49,22 @@ export class ZTokenizer {
     return 0;
   }
 
-  private _toVariable(key: string): string {
-    return `\${${key}}`;
-  }
-
   private async _expandGlobs(): Promise<string[]> {
     if (!this._options.files.length) {
-      throw new Error('No globs were provided.  Check your files option in your tokenizer config file or pass the globs on the command line.');
+      this._options.logger.warn(ZTokenizer.WarningNoGlobsProvided);
+      return [];
     }
 
     this._options.logger.info(chalk.cyan(`Expanding ${this._options.files.length} globs.`));
     const expanded = this._options.files.map((glob) => sync(glob, { dot: true })).reduce((p, c) => p.concat(c), []);
 
     if (expanded.length) {
-      this._options.logger.log(chalk.green(`Running token replacements on ${expanded.length} files.`));
+      this._options.logger.info(chalk.green(`Running token replacements on ${expanded.length} files.`));
     } else {
-      this._options.logger.warn(chalk.yellow('No files found to process'));
+      this._options.logger.warn(ZTokenizer.WarningNoFilesFound);
     }
 
     return expanded;
-  }
-
-  private async _mapVariablesToKeys(variables: string[]): Promise<string[]> {
-    const unique = chain(variables).uniq().value();
-
-    if (unique.length) {
-      this._options.logger.info(chalk.green(`Found a total of ${variables.length} variables across all files, of which, there are ${unique.length} unique variables.`));
-    } else {
-      this._options.logger.warn(chalk.yellow('No variables were found in any files.  A 1-1 copy of each file will simply be made.'));
-    }
-
-    return unique.map((variable) => variable.replace('${', '').replace('}', ''));
   }
 
   private async _findVariables(files: string[]): Promise<string[]> {
@@ -86,7 +79,15 @@ export class ZTokenizer {
       variables = variables.concat(local);
     }
 
-    return variables;
+    const unique = chain(variables).uniq().value();
+
+    if (unique.length) {
+      this._options.logger.info(chalk.green(`Found a total of ${variables.length} variables across all files, of which, there are ${unique.length} unique variables.`));
+    } else {
+      this._options.logger.warn(ZTokenizer.WarningNoVariablesFound);
+    }
+
+    return unique;
   }
 
   private async _writeFiles(variables: string[], keys: string[], dictionary: ZVariableDictionary, files: string[]) {
