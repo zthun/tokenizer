@@ -1,9 +1,7 @@
 {
-  "version": "1.0.0",
   "protocol": "https",
   "domain": "zthunworks.com",
   "port": "3000",
   "subdomain": "client",
-  "path": "",
   "hash": "home"
 }

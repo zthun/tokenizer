@@ -7,3 +7,5 @@ reports
 *.log
 *.tgz
 .rpt2_cache
+__tokenizer
+__processed
