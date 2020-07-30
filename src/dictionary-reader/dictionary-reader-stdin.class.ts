@@ -29,7 +29,8 @@ export class ZDictionaryReaderStdIn implements IZDictionaryReader {
       name: 'strategy',
       message: chalk.green(`What do you want to do with \${${key}}?`),
       choices: Object.keys(ZValueStrategy).map((key) => ZValueStrategy[key]),
-      default: 0
+      default: 0,
+      pageSize: Infinity
     };
 
     const answer = await prompt([question]);

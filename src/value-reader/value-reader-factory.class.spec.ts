@@ -26,10 +26,6 @@ describe('ZValueReaderFactory', () => {
     assertReaderForStrategy(ZValueReaderStatic, ZValueStrategy.Empty);
   });
 
-  it('should return a static reader for the null strategy.', () => {
-    assertReaderForStrategy(ZValueReaderStatic, ZValueStrategy.Null);
-  });
-
   it('should return a static reader for the true strategy.', () => {
     assertReaderForStrategy(ZValueReaderStatic, ZValueStrategy.True);
   });

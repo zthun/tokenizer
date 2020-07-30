@@ -1,9 +1,10 @@
-import { ZValueReaderStatic } from './value-reader-static.class';
+import { identity } from 'lodash';
+import { str2base64 } from '../util/str2base64.function';
 import { ZValueReaderKeep } from './value-reader-keep.class';
+import { ZValueReaderStatic } from './value-reader-static.class';
 import { ZValueReaderStdin } from './value-reader-stdin.class';
 import { IZValueReader } from './value-reader.interface';
 import { ZValueStrategy } from './value-strategy.enum';
-import { identity } from 'lodash';
 
 export class ZValueReaderFactory {
   public create(strategy: ZValueStrategy): IZValueReader {
@@ -11,13 +12,11 @@ export class ZValueReaderFactory {
       case ZValueStrategy.String:
         return new ZValueReaderStdin('string', null, identity);
       case ZValueStrategy.Base64:
-        return new ZValueReaderStdin('string', null, btoa);
+        return new ZValueReaderStdin('string', null, str2base64);
       case ZValueStrategy.Number:
         return new ZValueReaderStdin('number', 0, identity);
       case ZValueStrategy.Empty:
         return new ZValueReaderStatic('');
-      case ZValueStrategy.Null:
-        return new ZValueReaderStatic(null);
       case ZValueStrategy.True:
         return new ZValueReaderStatic(true);
       case ZValueStrategy.False:
