@@ -6,7 +6,7 @@ import { ZValueReaderFactory } from '../value-reader/value-reader-factory.class'
 import { IZValueReader } from '../value-reader/value-reader.interface';
 import { ZValueReaderKeep } from '../value-reader/value-reader-keep.class';
 import { ZValueStrategy } from '../value-reader/value-strategy.enum';
-import { ZValueReaderEmpty } from '../value-reader/value-reader-empty.class';
+import { ZValueReaderStatic } from '../value-reader/value-reader-static.class';
 
 jest.mock('inquirer');
 
@@ -20,7 +20,7 @@ describe('ZDictionaryReaderStdin', () => {
   }
 
   beforeEach(() => {
-    def = new ZValueReaderEmpty();
+    def = new ZValueReaderStatic('d');
     reader = new ZValueReaderKeep();
     factory = new ZValueReaderFactory();
 
@@ -37,7 +37,7 @@ describe('ZDictionaryReaderStdin', () => {
     jest.spyOn(console, 'log').mockClear().mockImplementation(noop);
     jest.spyOn(console, 'error').mockClear().mockImplementation(noop);
 
-    ((prompt as unknown) as jest.SpyInstance).mockResolvedValue({ strategy: ZValueStrategy.LeaveAsIs });
+    ((prompt as unknown) as jest.SpyInstance).mockResolvedValue({ strategy: ZValueStrategy.Leave });
   });
 
   it('should prompt the user for the options for each variable.', async () => {
@@ -62,7 +62,6 @@ describe('ZDictionaryReaderStdin', () => {
     // Arrange
     const target = createTestTarget();
     ((reader.read as unknown) as jest.SpyInstance).mockRejectedValue('failed');
-    ((def.read as unknown) as jest.SpyInstance).mockResolvedValue('d');
     // Act
     const actual = await target.read(['a', 'b', 'c']);
     // Assert

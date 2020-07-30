@@ -67,18 +67,18 @@ describe('ZTokenizerOptions', () => {
       // Act
       const target = createTestTarget();
       // Assert
-      expect(target.outputDirectory).toEqual(expected);
+      expect(target.output).toEqual(expected);
     });
 
     it('resolves to the output directory form the args if set relative to the cwd.', () => {
       // Arrange
       const outputDirectory = 'path/to/output-dir';
       const expected = resolve('.', outputDirectory);
-      args.outputDirectory = outputDirectory;
+      args.output = outputDirectory;
       // Act
       const target = createTestTarget();
       // Assert
-      expect(target.outputDirectory).toEqual(expected);
+      expect(target.output).toEqual(expected);
     });
   });
 
@@ -106,7 +106,7 @@ describe('ZTokenizerOptions', () => {
   describe('Dictionary', () => {
     it('sets the dictionary to a keep strategy if quiet is set and no dictionary file is provided.', () => {
       // Arrange
-      args.quiet = true;
+      args.obey = true;
       // Act
       const target = createTestTarget();
       // Assert
@@ -115,7 +115,7 @@ describe('ZTokenizerOptions', () => {
 
     it('sets the dictionary to a file strategy if dictionary file is provided.', () => {
       // Arrange
-      args.dictionaryFile = 'path/to/dictionary/file';
+      args.dictionary = 'path/to/dictionary/file';
       // Act
       const target = createTestTarget();
       // Assert
@@ -132,12 +132,12 @@ describe('ZTokenizerOptions', () => {
 
     describe('File strategy', () => {
       beforeEach(() => {
-        args.dictionaryFile = 'path/to/dictionary/file';
+        args.dictionary = 'path/to/dictionary/file';
       });
 
       it('sets the file relative to the cwd.', () => {
         // Arrange
-        const expected = resolve('.', args.dictionaryFile);
+        const expected = resolve('.', args.dictionary);
         // Act
         const target = createTestTarget();
         const actual = target.dictionary as ZDictionaryReaderFile;
@@ -147,7 +147,7 @@ describe('ZTokenizerOptions', () => {
 
       it('sets the fallback to keep if the quiet flag exists.', () => {
         // Arrange
-        args.quiet = true;
+        args.obey = true;
         // Act
         const target = createTestTarget();
         const actual = target.dictionary as ZDictionaryReaderFile;

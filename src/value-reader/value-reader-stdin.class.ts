@@ -1,51 +1,33 @@
-import { IZValueReader } from './value-reader.interface';
-import { prompt, Question, RawListQuestion } from 'inquirer';
 import chalk from 'chalk';
+import { prompt, Question } from 'inquirer';
+import { IZValueReader } from './value-reader.interface';
 
+/**
+ * Represents a value reader that retrieves a value from stdin and transforms the value.
+ */
 export class ZValueReaderStdin implements IZValueReader {
+  /**
+   * Initializes a new instance of this object.
+   *
+   * @param inquire The inquire type.
+   * @param transform The transformation function on the value.
+   */
+  public constructor(public inquire: 'string' | 'number', public defaults: any, public transform: (val: string | number) => string | number) {}
+
+  /**
+   * Reads from stdin.
+   *
+   * @returns A promise that returns the value entered.
+   */
   public async read(): Promise<string | number> {
-    const typeMap = {
-      String: 'string',
-      Number: 'number',
-      Password: 'password',
-      Boolean: 'confirm'
-    };
-
-    const defaultMap = {
-      String: '',
-      Number: 0,
-      Password: '',
-      Boolean: false
-    };
-
-    const typeQ: RawListQuestion = {
-      type: 'rawlist',
-      name: 'syntax',
-      message: chalk.gray('Type?'),
-      choices: ['String', 'Number', 'Password', 'Boolean'],
-      default: 0
-    };
-
-    const { syntax } = await prompt([typeQ]);
-    const type = typeMap[syntax];
-    const def = defaultMap[syntax];
-
     const valueQ: Question = {
-      type,
+      type: this.inquire,
       name: 'value',
       message: chalk.gray('Value?'),
-      default: def
+      default: this.defaults
     };
 
-    const encodingQ: RawListQuestion = {
-      type: 'rawlist',
-      name: 'encoding',
-      message: chalk.gray('Encoding?'),
-      choices: ['none', 'base64'],
-      default: 0
-    };
-
-    const { value, encoding } = await prompt([valueQ, encodingQ]);
-    return encoding !== 'none' ? Buffer.from(`${value}`).toString(encoding) : value;
+    const { value } = await prompt([valueQ]);
+    return this.transform(value);
   }
 }

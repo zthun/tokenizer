@@ -1,7 +1,6 @@
 import { ZValueReaderFactory } from './value-reader-factory.class';
 import { ZValueStrategy } from './value-strategy.enum';
-import { ZValueReaderEmpty } from './value-reader-empty.class';
-import { ZValueReaderFile } from './value-reader-file.class';
+import { ZValueReaderStatic } from './value-reader-static.class';
 import { ZValueReaderStdin } from './value-reader-stdin.class';
 import { ZValueReaderKeep } from './value-reader-keep.class';
 
@@ -19,19 +18,35 @@ describe('ZValueReaderFactory', () => {
     expect(actual).toBeInstanceOf(expected);
   }
 
-  it('should return an empty reader for the empty strategy.', () => {
-    assertReaderForStrategy(ZValueReaderEmpty, ZValueStrategy.MakeItEmpty);
-  });
-
-  it('should return an file reader for the file strategy.', () => {
-    assertReaderForStrategy(ZValueReaderFile, ZValueStrategy.ReadFromFile);
-  });
-
-  it('should return a stdin reader for the manual strategy.', () => {
-    assertReaderForStrategy(ZValueReaderStdin, ZValueStrategy.EnterValueManually);
-  });
-
   it('should return a keep reader for the keep strategy.', () => {
-    assertReaderForStrategy(ZValueReaderKeep, ZValueStrategy.LeaveAsIs);
+    assertReaderForStrategy(ZValueReaderKeep, ZValueStrategy.Leave);
+  });
+
+  it('should return a static reader for the empty string strategy.', () => {
+    assertReaderForStrategy(ZValueReaderStatic, ZValueStrategy.Empty);
+  });
+
+  it('should return a static reader for the null strategy.', () => {
+    assertReaderForStrategy(ZValueReaderStatic, ZValueStrategy.Null);
+  });
+
+  it('should return a static reader for the true strategy.', () => {
+    assertReaderForStrategy(ZValueReaderStatic, ZValueStrategy.True);
+  });
+
+  it('should return a static reader for the false strategy.', () => {
+    assertReaderForStrategy(ZValueReaderStatic, ZValueStrategy.False);
+  });
+
+  it('should return a stdin reader for the string strategy.', () => {
+    assertReaderForStrategy(ZValueReaderStdin, ZValueStrategy.String);
+  });
+
+  it('should return a stdin reader for the base64 strategy.', () => {
+    assertReaderForStrategy(ZValueReaderStdin, ZValueStrategy.Base64);
+  });
+
+  it('should return a stdin reader for the number strategy.', () => {
+    assertReaderForStrategy(ZValueReaderStdin, ZValueStrategy.Number);
   });
 });

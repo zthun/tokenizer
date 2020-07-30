@@ -118,10 +118,10 @@ export class ZTokenizer {
    * @returns A promise that resolves once all files are written.  Fails if any file fails to write.
    */
   private async _writeFiles(variables: string[], dictionary: ZVariableDictionary, files: string[]): Promise<void> {
-    this._options.logger.info(chalk.cyan(`Writing out ${files.length} files to ${this._options.outputDirectory}`));
+    this._options.logger.info(chalk.cyan(`Writing out ${files.length} files to ${this._options.output}`));
 
     for (const file of files) {
-      const outputPath = join(this._options.outputDirectory, file.replace(this._options.cwd, ''));
+      const outputPath = join(this._options.output, file.replace(this._options.cwd, ''));
       const parent = dirname(outputPath);
       const content = await this._readFileContent(file);
       let replaced = content;

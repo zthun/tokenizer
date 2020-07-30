@@ -5,6 +5,7 @@ export interface IZTokenizerOptions {
   dictionary: IZDictionaryReader;
   logger: Console;
   export: string;
-  outputDirectory: string;
+  output: string;
   cwd: string;
+  dry: boolean;
 }

@@ -16,8 +16,9 @@ export class ZTokenizerOptions implements IZTokenizerOptions {
   public dictionary: IZDictionaryReader;
   public logger: Console;
   public export: string;
-  public outputDirectory: string;
+  public output: string;
   public cwd: string;
+  public dry: boolean;
 
   /**
    * Initializes a new instance of this object.
@@ -27,17 +28,17 @@ export class ZTokenizerOptions implements IZTokenizerOptions {
     this.cwd = args.cwd ? resolve(args.cwd) : resolve('.');
     this.files = (args.files || []).map((file) => resolve(this.cwd, file));
     this.export = args.export ? resolve(this.cwd, args.export) : null;
-    this.outputDirectory = args.outputDirectory ? resolve(this.cwd, args.outputDirectory) : resolve(this.cwd, ZTokenizerOptions.DefaultOutputDirectory);
+    this.output = args.output ? resolve(this.cwd, args.output) : resolve(this.cwd, ZTokenizerOptions.DefaultOutputDirectory);
 
     const factory = new ZValueReaderFactory();
     const stdin = new ZDictionaryReaderStdIn(this.logger, factory);
     const keep = new ZDictionaryReaderKeep();
 
-    if (!args.dictionaryFile && args.quiet) {
+    if (!args.dictionary && args.obey) {
       this.dictionary = keep;
-    } else if (args.dictionaryFile) {
-      const file = resolve(this.cwd, args.dictionaryFile);
-      const fallback = args.quiet ? keep : stdin;
+    } else if (args.dictionary) {
+      const file = resolve(this.cwd, args.dictionary);
+      const fallback = args.obey ? keep : stdin;
       this.dictionary = new ZDictionaryReaderFile(file, fallback);
     } else {
       this.dictionary = stdin;

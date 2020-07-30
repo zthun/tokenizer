@@ -1,6 +1,6 @@
 module.exports = {
   files: ['test/**/*.json', 'test/**/*.yml'],
-  dictionaryFile: './test/dictionary/dictionary.json',
-  outputDictionary: '__tokenizer/dictionary.json',
-  outputDirectory: '__tokenizer/files'
+  dictionary: './test/dictionary/dictionary.json',
+  export: '__tokenizer/dictionary.json',
+  output: '__tokenizer'
 };

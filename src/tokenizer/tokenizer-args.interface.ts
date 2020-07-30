@@ -1,8 +1,10 @@
 export interface IZTokenizerArgs {
   files: string[];
-  dictionaryFile?: string;
+  dictionary?: string;
   export?: string;
-  outputDirectory?: string;
+  output?: string;
   cwd?: string;
-  quiet?: boolean;
+  obey?: boolean;
+  silent?: boolean;
+  help?: boolean;
 }
