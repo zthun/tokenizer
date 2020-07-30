@@ -64,11 +64,11 @@ export class ZTokenizer {
       return [];
     }
 
-    this._options.logger.info(chalk.cyan(`Expanding ${this._options.files.length} globs.`));
+    this._options.logger.info(chalk.blue(`Expanding ${this._options.files.length} globs.`));
     const expanded = this._options.files.map((glob) => sync(glob, { dot: true })).reduce((p, c) => p.concat(c), []);
 
     if (expanded.length) {
-      this._options.logger.info(chalk.green(`Running token replacements on ${expanded.length} files.`));
+      this._options.logger.info(chalk.blue(`Running token replacements on ${expanded.length} files.`));
     } else {
       this._options.logger.warn(ZTokenizer.WarningNoFilesFound);
     }
@@ -86,7 +86,7 @@ export class ZTokenizer {
    * @returns A promise that resolves to the list of unique variables to replace.
    */
   private async _findVariables(files: string[]): Promise<string[]> {
-    this._options.logger.info(`Finding variables in ${files.length} files.`);
+    this._options.logger.info(chalk.blue(`Finding variables in ${files.length} files.`));
 
     let variables: string[] = [];
 
@@ -100,7 +100,7 @@ export class ZTokenizer {
     const unique = chain(variables).uniq().value();
 
     if (unique.length) {
-      this._options.logger.info(chalk.green(`Found a total of ${variables.length} variables across all files, of which, there are ${unique.length} unique variables.`));
+      this._options.logger.info(chalk.blue(`Found a total of ${variables.length} variables across all files, of which, there are ${unique.length} unique variables.`));
     } else {
       this._options.logger.warn(ZTokenizer.WarningNoVariablesFound);
     }

@@ -88,18 +88,18 @@ describe('ZTokenizerOptions', () => {
       // Act
       const target = createTestTarget();
       // Assert
-      expect(target.outputDictionary).toBeNull();
+      expect(target.export).toBeNull();
     });
 
     it('resolves the output dictionary form the args if set relative to the cwd.', () => {
       // Arrange
       const outputDictionary = 'path/to/output-dict';
       const expected = resolve('.', outputDictionary);
-      args.outputDictionary = outputDictionary;
+      args.export = outputDictionary;
       // Act
       const target = createTestTarget();
       // Assert
-      expect(target.outputDictionary).toEqual(expected);
+      expect(target.export).toEqual(expected);
     });
   });
 

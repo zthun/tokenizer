@@ -4,7 +4,7 @@ export interface IZTokenizerOptions {
   files: string[];
   dictionary: IZDictionaryReader;
   logger: Console;
-  outputDictionary: string;
+  export: string;
   outputDirectory: string;
   cwd: string;
 }

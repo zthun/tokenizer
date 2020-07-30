@@ -1,3 +1,3 @@
 export interface IZValueReader {
-  read(key: string): Promise<string>;
+  read(key: string): Promise<string | number | boolean>;
 }

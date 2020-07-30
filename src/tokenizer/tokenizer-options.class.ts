@@ -15,7 +15,7 @@ export class ZTokenizerOptions implements IZTokenizerOptions {
   public files: string[];
   public dictionary: IZDictionaryReader;
   public logger: Console;
-  public outputDictionary: string;
+  public export: string;
   public outputDirectory: string;
   public cwd: string;
 
@@ -26,7 +26,7 @@ export class ZTokenizerOptions implements IZTokenizerOptions {
     this.logger = console;
     this.cwd = args.cwd ? resolve(args.cwd) : resolve('.');
     this.files = (args.files || []).map((file) => resolve(this.cwd, file));
-    this.outputDictionary = args.outputDictionary ? resolve(this.cwd, args.outputDictionary) : null;
+    this.export = args.export ? resolve(this.cwd, args.export) : null;
     this.outputDirectory = args.outputDirectory ? resolve(this.cwd, args.outputDirectory) : resolve(this.cwd, ZTokenizerOptions.DefaultOutputDirectory);
 
     const factory = new ZValueReaderFactory();

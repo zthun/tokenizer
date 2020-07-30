@@ -23,17 +23,16 @@ export class ZDictionaryReaderStdIn implements IZDictionaryReader {
    *
    * @returns The raw text value of the key.
    */
-  public async valueFor(key: string): Promise<string> {
+  public async valueFor(key: string): Promise<string | number | boolean> {
     const question: RawListQuestion = {
       type: 'rawlist',
       name: 'strategy',
-      message: chalk.green(`What do you want to do with the variable, ${chalk.bold(key)}?`),
+      message: chalk.green(`What do you want to do with \${${key}}?`),
       choices: Object.keys(ZValueStrategy).map((key) => ZValueStrategy[key]),
       default: 0
     };
 
     const answer = await prompt([question]);
-    this._logger.log();
 
     try {
       const strategy = this._factory.create(answer.strategy);
