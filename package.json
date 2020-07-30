@@ -21,8 +21,8 @@
     "make": "yarn clean && yarn lint && yarn test && yarn build",
     "package": "yarn publish",
     "release": "yarn version && yarn make && yarn package",
-    "debug": "node --inspect-brk -r ts-node/register src/cli ./test/files/**/*.json ./test/files/**/*.yml",
-    "start": "ts-node src/cli.ts test/json/**/*.json ./test/yml/**/*.yml"
+    "debug": "node --inspect-brk -r ts-node/register src/cli",
+    "start": "ts-node src/cli.ts"
   },
   "publishConfig": {
     "access": "public"

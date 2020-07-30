@@ -4,6 +4,8 @@ import { usage } from 'yargs';
 import { IZTokenizerArgs } from './tokenizer/tokenizer-args.interface';
 import { ZTokenizer } from './tokenizer/tokenizer.class';
 import { ZTokenizerOptions } from './tokenizer/tokenizer-options.class';
+import { cosmiconfig } from 'cosmiconfig';
+import { get } from 'lodash';
 
 const args: IZTokenizerArgs = usage('$0 <globs> [options]')
   .string('dictionary')
@@ -25,6 +27,29 @@ const args: IZTokenizerArgs = usage('$0 <globs> [options]')
   .parse() as any;
 
 // Yargs default (non-hyphen) comes in as _
-args.files = args['_'];
+if (get(args, '_.length')) {
+  args.files = args['_'];
+}
 
-new ZTokenizer(new ZTokenizerOptions(args)).run().then((result) => process.exit(result));
+cosmiconfig('tokenizer')
+  .search()
+  .then((config) => {
+    const cfg = get(config, 'config');
+    return cfg || {};
+  })
+  .then((config) => {
+    return Object.assign({}, config, args);
+  })
+  .then((args: IZTokenizerArgs) => {
+    return new ZTokenizerOptions(args);
+  })
+  .then((options) => {
+    return new ZTokenizer(options).run();
+  })
+  .then((result) => {
+    process.exit(result);
+  })
+  .catch((err) => {
+    console.log(err);
+    process.exit(1);
+  });

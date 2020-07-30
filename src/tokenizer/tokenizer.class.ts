@@ -1,8 +1,8 @@
 import chalk from 'chalk';
-import { readFile, writeFile, mkdir } from 'fs';
+import { mkdir, readFile, writeFile } from 'fs';
 import { sync } from 'glob';
 import { chain } from 'lodash';
-import { join, dirname } from 'path';
+import { dirname, join } from 'path';
 import { promisify } from 'util';
 import { ZVariableDictionary } from '../dictionary-reader/dictionary-reader.interface';
 import { IZTokenizerOptions } from './tokenizer-options.interface';
