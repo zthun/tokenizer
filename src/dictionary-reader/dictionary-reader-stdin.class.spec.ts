@@ -1,12 +1,12 @@
 import { prompt } from 'inquirer';
-import { ZDictionaryReaderStdin } from './dictionary-reader-stdin.class';
-import { IZValueReaderFactory } from '../value-reader/value-reader-factory.interface';
 import { noop } from 'lodash';
 import { ZValueReaderFactory } from '../value-reader/value-reader-factory.class';
-import { IZValueReader } from '../value-reader/value-reader.interface';
+import { IZValueReaderFactory } from '../value-reader/value-reader-factory.interface';
 import { ZValueReaderKeep } from '../value-reader/value-reader-keep.class';
-import { ZValueStrategy } from '../value-reader/value-strategy.enum';
 import { ZValueReaderStatic } from '../value-reader/value-reader-static.class';
+import { IZValueReader } from '../value-reader/value-reader.interface';
+import { ZValueStrategy } from '../value-reader/value-strategy.enum';
+import { ZDictionaryReaderStdin } from './dictionary-reader-stdin.class';
 
 jest.mock('inquirer');
 
