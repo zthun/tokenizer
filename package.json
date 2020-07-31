@@ -19,7 +19,7 @@
     "test": "jest --coverage --runInBand",
     "build": "tsc -p tsconfig.bin.json",
     "make": "yarn clean && yarn lint && yarn test && yarn build",
-    "release": "yarn version && yarn make && yarn publish",
+    "release": "yarn make && yarn version && yarn publish",
     "debug": "node --inspect-brk -r ts-node/register src/cli",
     "start": "ts-node src/cli.ts"
   },
