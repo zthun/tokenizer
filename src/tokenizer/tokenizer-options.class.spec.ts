@@ -6,6 +6,8 @@ import { ZDictionaryReaderFile } from '../dictionary-reader/dictionary-reader-fi
 import { ZDictionaryReaderStdin } from '../dictionary-reader/dictionary-reader-stdin.class';
 import { ZTokenReplacerFiles } from '../token-replacer/token-replacer-files.class';
 import { ZTokenReplacerSilent } from '../token-replacer/token-replacer-silent.class';
+import { ZDictionaryExporterSilent } from '../dictionary-exporter/dictionary-exporter-silent.class';
+import { ZDictionaryExporterJson } from '../dictionary-exporter/dictionary-exporter-json.class';
 
 describe('ZTokenizerOptions', () => {
   let args: IZTokenizerArgs;
@@ -103,24 +105,23 @@ describe('ZTokenizerOptions', () => {
     });
   });
 
-  describe('Output dictionary', () => {
-    it('resolves to null if no output dictionary is set.', () => {
+  describe('Exporter', () => {
+    it('resolves to a silent exporter if export is not set.', () => {
       // Arrange
       // Act
-      // const target = createTestTarget();
+      const target = createTestTarget();
       // Assert
-      // expect(target.export).toBeNull();
+      expect(target.exporter).toBeInstanceOf(ZDictionaryExporterSilent);
     });
 
-    it('resolves the output dictionary form the args if set relative to the cwd.', () => {
+    it('resolves to a json exporter if export is set.', () => {
       // Arrange
-      // const outputDictionary = 'path/to/output-dict';
-      // const expected = resolve('.', outputDictionary);
-      // args.export = outputDictionary;
+      const exp = '/tmp/path/to/dictionary';
+      args.export = exp;
       // Act
-      // const target = createTestTarget();
+      const target = createTestTarget();
       // Assert
-      // expect(target.export).toEqual(expected);
+      expect(target.exporter).toBeInstanceOf(ZDictionaryExporterJson);
     });
   });
 

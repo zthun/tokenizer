@@ -39,6 +39,7 @@ export class ZTokenizer {
       const keys = variables.map((variable) => variable.replace('${', '').replace('}', ''));
       const dictionary = await this._options.dictionary.read(keys);
       await this._options.replacer.write(files, variables, dictionary);
+      await this._options.exporter.write(dictionary);
     } catch (err) {
       this._options.logger.error(chalk.red(err));
       return 1;
