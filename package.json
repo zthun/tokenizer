@@ -1,7 +1,7 @@
 {
   "name": "@zthun/tokenizer",
   "version": "1.0.0-0",
-  "description": "An application used to replace dictionary tokens in files.",
+  "description": "An application used to replace tokens in files.",
   "author": "Anthony Bonta",
   "license": "MIT",
   "repository": {
@@ -19,8 +19,7 @@
     "test": "jest --coverage --runInBand",
     "build": "tsc -p tsconfig.bin.json",
     "make": "yarn clean && yarn lint && yarn test && yarn build",
-    "package": "yarn publish",
-    "release": "yarn version && yarn make && yarn package",
+    "release": "yarn version && yarn make && yarn publish",
     "debug": "node --inspect-brk -r ts-node/register src/cli",
     "start": "ts-node src/cli.ts"
   },

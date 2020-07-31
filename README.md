@@ -1,8 +1,39 @@
 # Description
 
-Tokenizer is a small token replacement application that can be used to replace variables in files.
+Tokenizer is a small token replacement application that can be used to replace token variables in files.
 
-This application is useful for building static files where the overlying application does not support the use of environment variables.
+Tokens in a file use the same format as environment variables on unix systems.
+
+> The ${color} ${animal} jumped over the \${object}.
+
+If the variable dictionary for the above line is as follows, then the following output will be given.
+
+```json
+{
+  "color": "brown",
+  "animal": "fox",
+  "object": "moon"
+}
+```
+
+> The brown fox jumped over the moon.
+
+## Installation
+
+### Locally
+
+```sh
+# With NPM
+npm install tokenizer --save-dev
+# With Yarn
+yarn add tokenizer --dev
+```
+
+### Globally
+
+```sh
+npm install -g tokenizer
+```
 
 ## Usage
 
