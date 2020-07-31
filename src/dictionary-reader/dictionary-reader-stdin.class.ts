@@ -7,7 +7,7 @@ import { IZDictionaryReader, ZVariableDictionary } from './dictionary-reader.int
 /**
  * Reads the dictionary from stdin.
  */
-export class ZDictionaryReaderStdIn implements IZDictionaryReader {
+export class ZDictionaryReaderStdin implements IZDictionaryReader {
   /**
    * Initializes a new instance of this object.
    *

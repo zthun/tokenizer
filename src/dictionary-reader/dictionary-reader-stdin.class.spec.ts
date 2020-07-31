@@ -1,5 +1,5 @@
 import { prompt } from 'inquirer';
-import { ZDictionaryReaderStdIn } from './dictionary-reader-stdin.class';
+import { ZDictionaryReaderStdin } from './dictionary-reader-stdin.class';
 import { IZValueReaderFactory } from '../value-reader/value-reader-factory.interface';
 import { noop } from 'lodash';
 import { ZValueReaderFactory } from '../value-reader/value-reader-factory.class';
@@ -16,7 +16,7 @@ describe('ZDictionaryReaderStdin', () => {
   let factory: IZValueReaderFactory;
 
   function createTestTarget() {
-    return new ZDictionaryReaderStdIn(console, factory);
+    return new ZDictionaryReaderStdin(console, factory);
   }
 
   beforeEach(() => {

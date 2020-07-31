@@ -1,10 +1,8 @@
 import chalk from 'chalk';
-import { mkdir, readFile, writeFile } from 'fs';
+import { readFile } from 'fs';
 import { sync } from 'glob';
 import { chain } from 'lodash';
-import { dirname, join } from 'path';
 import { promisify } from 'util';
-import { ZVariableDictionary } from '../dictionary-reader/dictionary-reader.interface';
 import { IZTokenizerOptions } from './tokenizer-options.interface';
 
 /**
@@ -16,8 +14,6 @@ export class ZTokenizer {
   public static readonly WarningNoVariablesFound = chalk.yellow('No variables were found in any of the discovered files.  A one to one copy of every file will be made with no changes.');
 
   private _readFileAsync = promisify(readFile);
-  private _writeFileAsync = promisify(writeFile);
-  private _mkdirAsync = promisify(mkdir);
 
   /**
    * Initializes a new instance of this object.
@@ -42,7 +38,7 @@ export class ZTokenizer {
       const variables = await this._findVariables(files);
       const keys = variables.map((variable) => variable.replace('${', '').replace('}', ''));
       const dictionary = await this._options.dictionary.read(keys);
-      await this._writeFiles(variables, dictionary, files);
+      await this._options.replacer.write(files, variables, dictionary);
     } catch (err) {
       this._options.logger.error(chalk.red(err));
       return 1;
@@ -91,7 +87,8 @@ export class ZTokenizer {
     let variables: string[] = [];
 
     for (const file of files) {
-      const content = await this._readFileContent(file);
+      const buffer = await this._readFileAsync(file);
+      const content = buffer.toString('utf-8');
       const matches = content.match(/\${[A-Z_0-9\-.]+}/gim);
       const local = chain(matches).uniq().value();
       variables = variables.concat(local);
@@ -106,45 +103,5 @@ export class ZTokenizer {
     }
 
     return unique;
-  }
-
-  /**
-   * Writes out the files with the variables replaced by the values in the dictionary.
-   *
-   * @param variables The variables to replace.
-   * @param dictionary The dictionary that contains the variable replacements.
-   * @param files The files to perform the replacements on.
-   *
-   * @returns A promise that resolves once all files are written.  Fails if any file fails to write.
-   */
-  private async _writeFiles(variables: string[], dictionary: ZVariableDictionary, files: string[]): Promise<void> {
-    this._options.logger.info(chalk.cyan(`Writing out ${files.length} files to ${this._options.output}`));
-
-    for (const file of files) {
-      const outputPath = join(this._options.output, file.replace(this._options.cwd, ''));
-      const parent = dirname(outputPath);
-      const content = await this._readFileContent(file);
-      let replaced = content;
-
-      for (const variable of variables) {
-        const key = variable.replace('${', '').replace('}', '');
-        replaced = replaced.split(variable).join((dictionary[key] ?? variable).toString());
-      }
-
-      await this._mkdirAsync(parent, { recursive: true });
-      await this._writeFileAsync(outputPath, replaced);
-    }
-  }
-
-  /**
-   * Reads a files contents into memory.
-   *
-   * @param file The file to read.
-   *
-   * @returns A promise that resolves the file contents as a utf-8 string.
-   */
-  private async _readFileContent(file: string): Promise<string> {
-    const buffer = await this._readFileAsync(file);
-    return buffer.toString('utf-8');
   }
 }

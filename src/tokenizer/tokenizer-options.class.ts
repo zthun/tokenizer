@@ -3,9 +3,12 @@ import { IZDictionaryReader } from '../dictionary-reader/dictionary-reader.inter
 import { IZTokenizerArgs } from './tokenizer-args.interface';
 import { IZTokenizerOptions } from './tokenizer-options.interface';
 import { ZValueReaderFactory } from '../value-reader/value-reader-factory.class';
-import { ZDictionaryReaderStdIn } from '../dictionary-reader/dictionary-reader-stdin.class';
+import { ZDictionaryReaderStdin } from '../dictionary-reader/dictionary-reader-stdin.class';
 import { ZDictionaryReaderKeep } from '../dictionary-reader/dictionary-reader-keep.class';
 import { ZDictionaryReaderFile } from '../dictionary-reader/dictionary-reader-file.class';
+import { IZTokenReplacer } from '../token-replacer/token-replacer.interface';
+import { ZTokenReplacerSilent } from '../token-replacer/token-replacer-silent.class';
+import { ZTokenReplacerFiles } from '../token-replacer/token-replacer-files.class';
 
 /**
  * Represents an object that will construct options for the ZTokenizer application based on the args configuration.
@@ -14,24 +17,29 @@ export class ZTokenizerOptions implements IZTokenizerOptions {
   public static readonly DefaultOutputDirectory = '__tokenizer';
   public files: string[];
   public dictionary: IZDictionaryReader;
+  public replacer: IZTokenReplacer;
   public logger: Console;
-  public export: string;
-  public output: string;
   public cwd: string;
-  public dry: boolean;
 
   /**
    * Initializes a new instance of this object.
+   *
+   * @param args The arguments to construct this options class.
    */
   public constructor(args: IZTokenizerArgs) {
     this.logger = console;
     this.cwd = args.cwd ? resolve(args.cwd) : resolve('.');
     this.files = (args.files || []).map((file) => resolve(this.cwd, file));
-    this.export = args.export ? resolve(this.cwd, args.export) : null;
-    this.output = args.output ? resolve(this.cwd, args.output) : resolve(this.cwd, ZTokenizerOptions.DefaultOutputDirectory);
+
+    if (args.silent) {
+      this.replacer = new ZTokenReplacerSilent();
+    } else {
+      const output = args.output ? resolve(this.cwd, args.output) : resolve(this.cwd, ZTokenizerOptions.DefaultOutputDirectory);
+      this.replacer = new ZTokenReplacerFiles(output, this.cwd);
+    }
 
     const factory = new ZValueReaderFactory();
-    const stdin = new ZDictionaryReaderStdIn(this.logger, factory);
+    const stdin = new ZDictionaryReaderStdin(this.logger, factory);
     const keep = new ZDictionaryReaderKeep();
 
     if (!args.dictionary && args.obey) {

@@ -1,7 +1,8 @@
-import { mkdir, NoParamCallback, readFile, writeFile } from 'fs';
+import { readFile } from 'fs';
 import { sync } from 'glob';
 import { noop } from 'lodash';
 import { ZVariableDictionary } from '../dictionary-reader/dictionary-reader.interface';
+import { IZTokenizerArgs } from './tokenizer-args.interface';
 import { ZTokenizerOptions } from './tokenizer-options.class';
 import { IZTokenizerOptions } from './tokenizer-options.interface';
 import { ZTokenizer } from './tokenizer.class';
@@ -29,7 +30,7 @@ describe('ZTokenizer', () => {
     contentA = 'This is the ${content} of the first file and it includes ${x} variables.';
     contentB = 'This is the ${content} of the ${second} file and it includes ${y} variables.';
 
-    const args = { files: ['path/to/globs/**/*.*'], quiet: true };
+    const args: IZTokenizerArgs = { files: ['path/to/globs/**/*.*'], silent: true, obey: true };
     options = new ZTokenizerOptions(args);
 
     jest.spyOn(options.logger, 'error').mockClear().mockImplementation(noop);
@@ -47,9 +48,6 @@ describe('ZTokenizer', () => {
         c(new Error('File not found'), null);
       }
     });
-
-    ((writeFile as unknown) as jest.SpyInstance).mockClear().mockImplementation((f: string, d: any, c: NoParamCallback) => c(null));
-    ((mkdir as unknown) as jest.SpyInstance).mockClear().mockImplementation((f: string, d: any, c: NoParamCallback) => c(null));
 
     dictionary = { content: 'buffered data', x: 2, y: 3 };
 
@@ -75,7 +73,7 @@ describe('ZTokenizer', () => {
   describe('Error', () => {
     it('should return 1 if an error occurs when writing files.', async () => {
       // Arrange
-      ((writeFile as unknown) as jest.SpyInstance).mockImplementation((f: string, d: any, c: NoParamCallback) => c(new Error('Could not write file.')));
+      jest.spyOn(options.replacer, 'write').mockRejectedValue(new Error('Could not write files.'));
       await assertAppReturnsCode(1);
     });
 

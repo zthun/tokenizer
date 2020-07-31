@@ -3,7 +3,9 @@ import { ZTokenizerOptions } from './tokenizer-options.class';
 import { resolve } from 'path';
 import { ZDictionaryReaderKeep } from '../dictionary-reader/dictionary-reader-keep.class';
 import { ZDictionaryReaderFile } from '../dictionary-reader/dictionary-reader-file.class';
-import { ZDictionaryReaderStdIn } from '../dictionary-reader/dictionary-reader-stdin.class';
+import { ZDictionaryReaderStdin } from '../dictionary-reader/dictionary-reader-stdin.class';
+import { ZTokenReplacerFiles } from '../token-replacer/token-replacer-files.class';
+import { ZTokenReplacerSilent } from '../token-replacer/token-replacer-silent.class';
 
 describe('ZTokenizerOptions', () => {
   let args: IZTokenizerArgs;
@@ -60,14 +62,32 @@ describe('ZTokenizerOptions', () => {
     });
   });
 
-  describe('Output directory', () => {
+  describe('Replacer', () => {
+    it('resolves to a silent replacer if the silent flag is set.', () => {
+      // Arrange
+      args.silent = true;
+      // Act
+      const target = createTestTarget();
+      // Assert
+      expect(target.replacer).toBeInstanceOf(ZTokenReplacerSilent);
+    });
+
+    it('resolves to a files replacer if the silent flag is not set.', () => {
+      // Arrange
+      // Act
+      const target = createTestTarget();
+      // Assert
+      expect(target.replacer).toBeInstanceOf(ZTokenReplacerFiles);
+    });
+
     it('resolves to the output directory to the default if not set relative to the cwd.', () => {
       // Arrange
       const expected = resolve('.', ZTokenizerOptions.DefaultOutputDirectory);
       // Act
       const target = createTestTarget();
+      const actual = (target.replacer as ZTokenReplacerFiles).output;
       // Assert
-      expect(target.output).toEqual(expected);
+      expect(actual).toEqual(expected);
     });
 
     it('resolves to the output directory form the args if set relative to the cwd.', () => {
@@ -77,8 +97,9 @@ describe('ZTokenizerOptions', () => {
       args.output = outputDirectory;
       // Act
       const target = createTestTarget();
+      const actual = (target.replacer as ZTokenReplacerFiles).output;
       // Assert
-      expect(target.output).toEqual(expected);
+      expect(actual).toEqual(expected);
     });
   });
 
@@ -86,20 +107,20 @@ describe('ZTokenizerOptions', () => {
     it('resolves to null if no output dictionary is set.', () => {
       // Arrange
       // Act
-      const target = createTestTarget();
+      // const target = createTestTarget();
       // Assert
-      expect(target.export).toBeNull();
+      // expect(target.export).toBeNull();
     });
 
     it('resolves the output dictionary form the args if set relative to the cwd.', () => {
       // Arrange
-      const outputDictionary = 'path/to/output-dict';
-      const expected = resolve('.', outputDictionary);
-      args.export = outputDictionary;
+      // const outputDictionary = 'path/to/output-dict';
+      // const expected = resolve('.', outputDictionary);
+      // args.export = outputDictionary;
       // Act
-      const target = createTestTarget();
+      // const target = createTestTarget();
       // Assert
-      expect(target.export).toEqual(expected);
+      // expect(target.export).toEqual(expected);
     });
   });
 
@@ -127,7 +148,7 @@ describe('ZTokenizerOptions', () => {
       // Act
       const target = createTestTarget();
       // Assert
-      expect(target.dictionary).toBeInstanceOf(ZDictionaryReaderStdIn);
+      expect(target.dictionary).toBeInstanceOf(ZDictionaryReaderStdin);
     });
 
     describe('File strategy', () => {
@@ -161,7 +182,7 @@ describe('ZTokenizerOptions', () => {
         const target = createTestTarget();
         const actual = target.dictionary as ZDictionaryReaderFile;
         // Assert
-        expect(actual.fallback).toBeInstanceOf(ZDictionaryReaderStdIn);
+        expect(actual.fallback).toBeInstanceOf(ZDictionaryReaderStdin);
       });
     });
   });
