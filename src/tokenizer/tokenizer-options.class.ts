@@ -17,7 +17,6 @@ import { IZTokenizerOptions } from './tokenizer-options.interface';
  * Represents an object that will construct options for the ZTokenizer application based on the args configuration.
  */
 export class ZTokenizerOptions implements IZTokenizerOptions {
-  public static readonly DefaultOutputDirectory = '__tokenizer';
   public files: string[];
   public dictionary: IZDictionaryReader;
   public replacer: IZTokenReplacer;
@@ -38,8 +37,8 @@ export class ZTokenizerOptions implements IZTokenizerOptions {
     this.replacer = new ZTokenReplacerSilent();
 
     if (!args.silent) {
-      const output = args.output ? resolve(this.cwd, args.output) : resolve(this.cwd, ZTokenizerOptions.DefaultOutputDirectory);
-      this.replacer = new ZTokenReplacerFiles(output, this.cwd);
+      const output = args.output ? resolve(this.cwd, args.output) : null;
+      this.replacer = new ZTokenReplacerFiles(output, this.cwd, this.logger);
     }
 
     this.exporter = new ZDictionaryExporterSilent();
@@ -60,7 +59,7 @@ export class ZTokenizerOptions implements IZTokenizerOptions {
     } else if (args.dictionary) {
       const file = resolve(this.cwd, args.dictionary);
       const fallback = args.obey ? keep : stdin;
-      this.dictionary = new ZDictionaryReaderFile(file, fallback);
+      this.dictionary = new ZDictionaryReaderFile(file, this.logger, fallback);
     }
   }
 }

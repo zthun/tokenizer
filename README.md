@@ -47,7 +47,7 @@ All options are optional.
 
 | Option       | Alias | Description                                                                                                         | Type    |
 | ------------ | ----- | ------------------------------------------------------------------------------------------------------------------- | ------- |
-| --output     | -o    | The directory to output all the tokenized files. If not specified, all files will be dumped in \_\_tokenized.       | String  |
+| --output     | -o    | The directory to output all the tokenized files. Will dump all files to the console not set.                        | String  |
 | --dictionary | -d    | The path to the json dictionary file. If not specified, you will be asked for each variable and what to do with it. | String  |
 | --export     | -e    | The path to save the dictionary file to. Does not write out anything if this is not specified.                      | String  |
 | --obey       | -q    | Do not ask for any dictionary values. Variable values that are missing will be kept.                                | Boolean |

@@ -15,10 +15,11 @@ export class ZTokenReplacerFiles implements IZTokenReplacer {
   /**
    * Initializes a new instance of this object.
    *
-   * @param output The fully qualified path to the output directory.
+   * @param output The fully qualified path to the output directory.  If falsy, writes to the logger.
    * @param cwd The fully qualified path to the current working directory.
+   * @param logger The logger to log the output to if the output is falsy.
    */
-  public constructor(public readonly output: string, public readonly cwd: string) {}
+  public constructor(public readonly output: string, public readonly cwd: string, public logger: Console) {}
 
   /**
    * Loops through all files and replaces all variables in that file.
@@ -31,8 +32,6 @@ export class ZTokenReplacerFiles implements IZTokenReplacer {
    */
   public async write(files: string[], variables: string[], dictionary: ZVariableDictionary): Promise<void> {
     for (const file of files) {
-      const outputPath = join(this.output, file.replace(this.cwd, ''));
-      const parent = dirname(outputPath);
       const buffer = await this._readFileAsync(file);
 
       let replaced = buffer.toString('utf-8');
@@ -42,8 +41,14 @@ export class ZTokenReplacerFiles implements IZTokenReplacer {
         replaced = replaced.split(variable).join((dictionary[key] ?? variable).toString());
       }
 
-      await this._mkdirAsync(parent, { recursive: true });
-      await this._writeFileAsync(outputPath, replaced);
+      if (this.output) {
+        const outputPath = join(this.output, file.replace(this.cwd, ''));
+        const parent = dirname(outputPath);
+        await this._mkdirAsync(parent, { recursive: true });
+        await this._writeFileAsync(outputPath, replaced);
+      } else {
+        this.logger.log(replaced);
+      }
     }
   }
 }

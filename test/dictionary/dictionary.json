@@ -3,5 +3,6 @@
   "domain": "zthunworks.com",
   "port": 3000,
   "subdomain": "client",
-  "hash": true
+  "hash": "home",
+  "secure": true
 }

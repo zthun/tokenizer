@@ -6,6 +6,7 @@ import { ZTokenizer } from './tokenizer/tokenizer.class';
 import { ZTokenizerOptions } from './tokenizer/tokenizer-options.class';
 import { cosmiconfig } from 'cosmiconfig';
 import { get } from 'lodash';
+import chalk from 'chalk';
 
 const args: IZTokenizerArgs = usage('$0 <globs> [options]')
   .string('dictionary')
@@ -23,6 +24,8 @@ const args: IZTokenizerArgs = usage('$0 <globs> [options]')
   .describe('silent', 'No output will be written.')
   .string('cwd')
   .describe('cwd', 'Current working directory.')
+  .string('config')
+  .describe('config', 'Path to config file to load.')
   .help()
   .parse() as any;
 
@@ -31,25 +34,25 @@ if (get(args, '_.length')) {
   args.files = args['_'];
 }
 
-cosmiconfig('tokenizer')
-  .search()
+const explorer = cosmiconfig('tokenizer');
+const search = args.config ? Promise.resolve({ filepath: args.config }) : explorer.search();
+
+search
   .then((config) => {
-    const cfg = get(config, 'config');
-    return cfg || {};
+    const filepath = get(config, 'filepath');
+    console.log(filepath ? chalk.blue(`Loading config file, ${filepath}`) : chalk.yellow('No config file provided.  Using an empty config.'));
+    return filepath ? explorer.load(filepath) : Promise.resolve({ filepath, config: {}, isEmpty: true });
   })
-  .then((config) => {
-    return Object.assign({}, config, args);
-  })
-  .then((args: IZTokenizerArgs) => {
-    return new ZTokenizerOptions(args);
-  })
-  .then((options) => {
+  .then((cfg) => {
+    const config = get(cfg, 'config') || {};
+    const combined: IZTokenizerArgs = Object.assign({}, config, args);
+    const options = new ZTokenizerOptions(combined);
     return new ZTokenizer(options).run();
   })
   .then((result) => {
     process.exit(result);
   })
   .catch((err) => {
-    console.log(err);
+    console.log(chalk.red(err));
     process.exit(1);
   });

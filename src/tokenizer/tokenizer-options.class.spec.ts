@@ -82,14 +82,13 @@ describe('ZTokenizerOptions', () => {
       expect(target.replacer).toBeInstanceOf(ZTokenReplacerFiles);
     });
 
-    it('resolves to the output directory to the default if not set relative to the cwd.', () => {
+    it('resolves to the output directory to falsy if not set relative to the cwd.', () => {
       // Arrange
-      const expected = resolve('.', ZTokenizerOptions.DefaultOutputDirectory);
       // Act
       const target = createTestTarget();
       const actual = (target.replacer as ZTokenReplacerFiles).output;
       // Assert
-      expect(actual).toEqual(expected);
+      expect(actual).toBeFalsy();
     });
 
     it('resolves to the output directory form the args if set relative to the cwd.', () => {

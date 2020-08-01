@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import { readFile } from 'fs';
 import { promisify } from 'util';
 import { IZDictionaryReader, ZVariableDictionary } from './dictionary-reader.interface';
@@ -7,12 +8,18 @@ import { IZDictionaryReader, ZVariableDictionary } from './dictionary-reader.int
  */
 export class ZDictionaryReaderFile implements IZDictionaryReader {
   /**
+   * The warning given if the file cannot be read and the fallback is to be used.
+   */
+  public static readonly WarningUnableToReadFile = 'Could not read the dictionary file.  Defaulting to an empty dictionary and using the fallback.';
+
+  /**
    * Initializes a new instance of this object.
    *
    * @param file The path to the file to read.
+   * @param logger The logger to log warnings to.
    * @param fallback The fallback reader for keys that are missing from the file.
    */
-  public constructor(public readonly file: string, public readonly fallback: IZDictionaryReader) {}
+  public constructor(public readonly file: string, public logger: Console, public readonly fallback: IZDictionaryReader) {}
 
   /**
    * Gets the dictionary for the specified keys.
@@ -25,8 +32,17 @@ export class ZDictionaryReaderFile implements IZDictionaryReader {
    */
   public async read(keys: string[]): Promise<ZVariableDictionary> {
     const readFileAsync = promisify(readFile);
-    const buffer = await readFileAsync(this.file);
-    let dictionary: any = JSON.parse(buffer.toString('utf-8'));
+
+    let dictionary: any = {};
+
+    try {
+      const buffer = await readFileAsync(this.file);
+      dictionary = JSON.parse(buffer.toString('utf-8'));
+    } catch (err) {
+      this.logger.warn(chalk.yellow(`${err}`));
+      this.logger.warn(chalk.yellow(ZDictionaryReaderFile.WarningUnableToReadFile));
+    }
+
     const missing = keys.filter((key) => !Object.prototype.hasOwnProperty.call(dictionary, key));
 
     if (missing.length) {

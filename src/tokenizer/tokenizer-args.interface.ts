@@ -5,6 +5,7 @@ export interface IZTokenizerArgs {
   output?: string;
   cwd?: string;
   obey?: boolean;
+  config?: string;
   silent?: boolean;
   help?: boolean;
 }

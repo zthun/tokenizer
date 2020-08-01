@@ -6,5 +6,6 @@
   "subdomain": "${subdomain}",
   "path": "${path}",
   "hash": "${hash}",
+  "secure": "${secure}",
   "url": "${protocol}://${subdomain}.${domain}:${port}/${path}#${hash}"
 }

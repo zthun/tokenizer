@@ -2,6 +2,7 @@ import { ZTokenReplacerFiles } from './token-replacer-files.class';
 import { readFile, writeFile, mkdir, NoParamCallback } from 'fs';
 import { ZVariableDictionary } from '../dictionary-reader/dictionary-reader.interface';
 import { resolve } from 'path';
+import { noop } from 'lodash';
 
 jest.mock('fs');
 
@@ -15,8 +16,8 @@ describe('ZTokenReplacerFiles', () => {
   let dictionary: ZVariableDictionary;
   let variables: string[];
 
-  function createTestTarget() {
-    return new ZTokenReplacerFiles(output, cwd);
+  function createTestTarget(output: string) {
+    return new ZTokenReplacerFiles(output, cwd, console);
   }
 
   beforeEach(() => {
@@ -42,13 +43,15 @@ describe('ZTokenReplacerFiles', () => {
       }
     });
 
+    jest.spyOn(console, 'log').mockClear().mockImplementation(noop);
+
     ((writeFile as unknown) as jest.SpyInstance).mockClear().mockImplementation((f: string, d: any, c: NoParamCallback) => c(null));
     ((mkdir as unknown) as jest.SpyInstance).mockClear().mockImplementation((f: string, d: any, c: NoParamCallback) => c(null));
   });
 
   it('should output files relative to the output and cwd paths.', async () => {
     // Arrange
-    const target = createTestTarget();
+    const target = createTestTarget(output);
     const expected = resolve(output, fileA);
     // Act
     await target.write([fileA], variables, dictionary);
@@ -56,9 +59,19 @@ describe('ZTokenReplacerFiles', () => {
     expect(writeFile).toHaveBeenCalledWith(expected, expect.anything(), expect.anything());
   });
 
+  it('should output the files to the logger if the output is falsy.', async () => {
+    // Arrange
+    const target = createTestTarget(null);
+    const expected = contentA.replace('${content}', `${dictionary.content}`).replace('${x}', `${dictionary.x}`);
+    // Act
+    await target.write([fileA], variables, dictionary);
+    // Assert
+    expect(console.log).toHaveBeenCalledWith(expected);
+  });
+
   it('should replace variables in a file.', async () => {
     // Arrange
-    const target = createTestTarget();
+    const target = createTestTarget(output);
     const expected = contentA.replace('${content}', `${dictionary.content}`).replace('${x}', `${dictionary.x}`);
     // Act
     await target.write([fileA], variables, dictionary);
@@ -68,7 +81,7 @@ describe('ZTokenReplacerFiles', () => {
 
   it('leaves variables alone if they are not found in the dictionary.', async () => {
     // Arrange
-    const target = createTestTarget();
+    const target = createTestTarget(output);
     const expected = contentB.replace('${content}', `${dictionary.content}`).replace('${y}', `${dictionary.y}`);
     // Act
     await target.write([fileB], variables, dictionary);
