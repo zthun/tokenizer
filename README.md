@@ -53,6 +53,7 @@ All options are optional.
 | --obey       | -q    | Do not ask for any dictionary values. Variable values that are missing will be kept.                                | Boolean |
 | --silent     |       | Do not output anything. Useful if you just want to build a dictionary file.                                         | Boolean |
 | --cwd        |       | Sets the current working directory. The directory structure in the output directory.                                | String  |
+| --config     |       | The optional config file to load. Override the defaults.                                                            | String  |
 | --help       |       | Show help. Immediately exits the application afterward.                                                             | Boolean |
 | --version    |       | Show version number. Immediately exists the application afterward.                                                  | Boolean |
 
@@ -67,7 +68,7 @@ run the tokenizer application and it will load up the config values from there.
 - tokenizer.yaml
 - tokenizer.yml
 
-You can also add a tokenizer key in your package.json file with all the options you want. However, please be aware that the help and version options are ignored from the config file. The following is an example config file.
+You can also add a tokenizer key in your package.json file with all the options you want, or you can specify the config file using the --config option on the command line. However, please be aware that the help, config and version options are ignored from the config file. The following is an example config file.
 
 > tokenizer.json
 
