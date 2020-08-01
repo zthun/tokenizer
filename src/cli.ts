@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 
-import { usage } from 'yargs';
-import { IZTokenizerArgs } from './tokenizer/tokenizer-args.interface';
-import { ZTokenizer } from './tokenizer/tokenizer.class';
-import { ZTokenizerOptions } from './tokenizer/tokenizer-options.class';
+import chalk from 'chalk';
 import { cosmiconfig } from 'cosmiconfig';
 import { get } from 'lodash';
-import chalk from 'chalk';
+import { resolve } from 'path';
+import { usage } from 'yargs';
+import { IZTokenizerArgs } from './tokenizer/tokenizer-args.interface';
+import { ZTokenizerOptions } from './tokenizer/tokenizer-options.class';
+import { ZTokenizer } from './tokenizer/tokenizer.class';
 
 const args: IZTokenizerArgs = usage('$0 <globs> [options]')
   .string('dictionary')
@@ -35,7 +36,7 @@ if (get(args, '_.length')) {
 }
 
 const explorer = cosmiconfig('tokenizer');
-const search = args.config ? Promise.resolve({ filepath: args.config }) : explorer.search();
+const search = args.config ? Promise.resolve({ filepath: resolve('.', args.config) }) : explorer.search();
 
 search
   .then((config) => {
